@@ -100,8 +100,8 @@
             responseDiv.textContent = '';
 
             try {
-                // Replace this URL with your actual API endpoint
-                const response = await fetch('YOUR_API_ENDPOINT', {
+                console.log("Sending question:", question);
+                const response = await fetch('http://localhost:5000/query', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -110,10 +110,24 @@
                 });
 
                 const data = await response.json();
-                responseDiv.textContent = data.response;
+                console.log("Received response:", data);
+
+                if (data.error) {
+                    responseDiv.textContent = `Error: ${data.error}`;
+                } else if (data.response) {
+                    if (data.response.code_success === "Success") {
+                        // Handle empty or undefined output
+                        const output = data.response.output || "No output received";
+                        responseDiv.textContent = output;
+                    } else {
+                        responseDiv.textContent = `Error executing code: ${data.response.output}`;
+                    }
+                } else {
+                    responseDiv.textContent = "Invalid response format received";
+                }
             } catch (error) {
+                console.error("Error details:", error);
                 responseDiv.textContent = 'Error: Unable to get response. Please try again later.';
-                console.error('Error:', error);
             } finally {
                 loadingDiv.style.display = 'none';
             }
