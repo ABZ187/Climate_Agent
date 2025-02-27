@@ -6,6 +6,8 @@ from langchain_ollama import ChatOllama, OllamaLLM
 
 llm = ChatOllama(
     model=model,
+    num_gpu=1,
+    num_cpu=0,
     # temperature=0,
     # other params...
 )
@@ -55,10 +57,10 @@ columns = [
 columns_desc = [
     "storm_id: datatype = int, desc = numeric id unique for each storm",
     "name: datatype = str, desc = Name of the storm. May be 'UNNAMED' if the storm was not named"
-    "lattitude: datatype = float, desc = lattitude",
+    "lattitude: datatype = float, desc = latitude",
     "longitude: datatype = float, desc = longitude",
-    "wind_speed: datatype = float, desc = max sustained wind speed at that time",
-    "pressure: datatype = float, desc = minimum central pressure at that time",
+    "wind_speed: datatype = float, desc = max sustained wind speed at that time in knots",
+    "pressure: datatype = float, desc = minimum central pressure at that time in millibars(mb)",
     "season: datatype = int, desc = season number",
     "subbasin: datatype = str, desc =Either Arabian Sea or Bay of Bengal",
     "iso_time: datatype = str, desc = time of the storm in format YYYY-MM-DD HH:MM:SS",
@@ -71,7 +73,7 @@ columns_desc = [
 def input_query(query: str):
     return f"""You are a data analysis agent, You are provided with the data on oceanic storms . Write a code to answer the user query based on the csv file present at the location: {file_location}, be careful with the file name, it should be exactly the same as the location. You will be provided with the schema of the data.Use pandas library to load and analysis the data. Format the code between strings "```python" and "```" Remember to print the result at the end of the code using print() function. Always print only the result e.g. print(6) not print(The largest windspeed is 6 mph).
     The data contains the following variable for the Northern Indian Ocean
-    basin: The schema of the data is {columns_desc}.\nHere is the user's message: {query}"""
+    basin: The schema of the data is {columns_desc}.Keep in mind that each storm is represented using 360 rows. The iso_time, storm_grade, storm speed, wind speed, latitude, longitude vary over these 360 rows, but the name, season and storm_id remain constant for each unique storm. Therefor when asked for counting statistics of storms (for example the number of storms with wind speeds above a thereshold) only count the number of unique storm_ids and not the number of rows satisfying the condition. \nHere is the user's message: {query}"""
 
 
 import io
