@@ -115,6 +115,11 @@ message = "Which storm has highest wind speed in 2003?"
 
 def run_app(message):
     try:
+        return {
+            "code_success": "speed test",
+            "output": "speed test",
+            "code": "speed test",
+        }
         response = llm.invoke(input_query(message))
         print("LLM Response:", response.content)
 
