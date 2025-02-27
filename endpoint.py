@@ -28,7 +28,7 @@ def code_extraction(response: str):
         return "No code block found."
 
 
-file_location = "/mnt/AE5A236D5A23320F/Files/Flame_University/ai_agents/climate_agent/data/IBTrACS.NI.v04r01_new2.csv"
+file_location = "/mnt/cai-data/climate_agent/data/IBTrACS.NI.v04r01_new2.csv"
 schema = '["storm" dtype="int64", "iso_time" dtype= object, "lat" dtype="float64", "lon" dtype="float64", "newdelhi_wind" dtype="float64", "newdelhi_pres" dtype="float64"]'
 
 subbasin_unique = {
