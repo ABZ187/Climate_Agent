@@ -12,7 +12,6 @@ def query():
         data = request.json
         print("Received data:", data)
         question = data.get("question")
-        return jsonify({"speed test": "No question provided"}), 200
         if not question:
             return jsonify({"error": "No question provided"}), 400
 
