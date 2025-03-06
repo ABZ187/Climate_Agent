@@ -1,7 +1,18 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from endpoint import run_app
+from datetime import datetime
 
+# Configure logging
+import logging
+import os
+
+logging.basicConfig(
+    filename=os.path.join(os.path.dirname(__file__), "app.log"),
+    level=logging.INFO,
+    format="%(asctime)s - %(message)s",
+)
+logger = logging.getLogger(__name__)
 app = Flask(__name__)
 CORS(app)  # This allows requests from your frontend
 
@@ -10,13 +21,13 @@ CORS(app)  # This allows requests from your frontend
 def query():
     try:
         data = request.json
-        print("Received data:", data)
         question = data.get("question")
         if not question:
             return jsonify({"error": "No question provided"}), 400
 
+        # Log the time of query received and the input query
+        logger.info(f"Query received: {question}")
         result = run_app(question)
-        print("Response from run_app:", result)
 
         # Ensure we're returning a properly formatted response
         if isinstance(result, dict):
@@ -30,11 +41,12 @@ def query():
         else:
             response = {"response": {"code_success": "Failed", "output": str(result)}}
 
-        print("Sending response:", response)
+        # Log the time of output sent and the response
+        logger.info(f"Response sent: {response}")
         return jsonify(response)
 
     except Exception as e:
-        print("Error occurred:", str(e))
+        logger.error(f"Error occurred: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 

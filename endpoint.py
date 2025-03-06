@@ -80,16 +80,15 @@ import io
 import sys
 import time
 
-# Create a StringIO buffer
-buffer = io.StringIO()
-
-# Redirect sys.stdout to the buffer
-sys.stdout = buffer
-
 
 def code_executor(code: str) -> dict:
     """Execute python code"""
     generated_code = code
+    # Create a StringIO buffer
+    buffer = io.StringIO()
+
+    # Redirect sys.stdout to the buffer
+    sys.stdout = buffer
     try:
         buffer.seek(0)
         buffer.truncate(0)
@@ -110,19 +109,16 @@ def code_executor(code: str) -> dict:
         }
 
 
-message = "Which storm has highest wind speed in 2003?"
-
-
 def run_app(message):
     try:
         response = llm.invoke(input_query(message))
-        print("LLM Response:", response.content)
+        # print("LLM Response:", response.content)
 
         extracted_code = code_extraction(response.content)
-        print("Extracted code:", extracted_code)
+        # print("Extracted code:", extracted_code)
 
         output = code_executor(extracted_code)
-        print("Execution output:", output)
+        # print("Execution output:", output)
 
         return output
     except Exception as e:
@@ -135,4 +131,7 @@ def run_app(message):
 
 
 if __name__ == "__main__":
+    message = "Which storm has highest wind speed in 2003?"
+    # Create a StringIO buffer
+
     run_app(message)
