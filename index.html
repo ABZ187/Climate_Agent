@@ -120,7 +120,7 @@
                         const output = data.response.output || "No output received";
                         responseDiv.textContent = output;
                     } else {
-                        responseDiv.textContent = `Error executing code: ${data.response.output}`;
+                        responseDiv.textContent = `${data.response.output}`;
                     }
                 } else {
                     responseDiv.textContent = "Invalid response format received";
