@@ -22,12 +22,13 @@ def query():
     try:
         data = request.json
         question = data.get("question")
+        model = data.get("model", "qwen2.5-coder:3b")
         if not question:
             return jsonify({"error": "No question provided"}), 400
 
         # Log the time of query received and the input query
-        logger.info(f"Query received: {question}")
-        result = run_app(question)
+        logger.info(f"Model: {model}, Query received: {question}")
+        result = run_app(question, model)
 
         # Ensure we're returning a properly formatted response
         if isinstance(result, dict):

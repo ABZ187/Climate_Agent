@@ -1,10 +1,18 @@
+
+import io
+import os
+import sys
+import re
+from openai import OpenAI
+from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
+from dotenv import load_dotenv
+load_dotenv()
+
 model = "qwen2.5-coder:3b"
-# model = "codellama:34b-code"
+openai_key = os.environ["openai_key"]
 
-
-from langchain_ollama import ChatOllama, OllamaLLM
-
-llm = ChatOllama(
+qwen_llm = ChatOllama(
     model=model,
     num_gpu=1,
     num_cpu=0,
@@ -12,8 +20,16 @@ llm = ChatOllama(
     # other params...
 )
 
+client = OpenAI(
+    api_key = openai_key
+)
 
-import re
+Chatgpt_llm = ChatOpenAI(model="gpt-4o",api_key=openai_key)
+
+llm_dict={
+    "qwen2.5-coder:3b": qwen_llm,
+    "gpt-4o": Chatgpt_llm
+}
 
 
 def code_extraction(response: str):
@@ -76,10 +92,6 @@ def input_query(query: str):
     basin: The schema of the data is {columns_desc}.Keep in mind that each storm is represented using 360 rows. The iso_time, storm_grade, storm speed, wind speed, latitude, longitude vary over these 360 rows, but the name, season and storm_id remain constant for each unique storm. Therefor when asked for counting statistics of storms (for example the number of storms with wind speeds above a thereshold) only count the number of unique storm_ids and not the number of rows satisfying the condition. \nHere is the user's message: {query}"""
 
 
-import io
-import sys
-import time
-
 
 def code_executor(code: str) -> dict:
     """Execute python code"""
@@ -109,7 +121,9 @@ def code_executor(code: str) -> dict:
         }
 
 
-def run_app(message):
+def run_app(message, model):
+    llm = llm_dict.get(model,llm_dict["qwen2.5-coder:3b"])
+    
     try:
         response = llm.invoke(input_query(message))
         # print("LLM Response:", response.content)

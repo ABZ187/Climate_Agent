@@ -34,6 +34,14 @@
             font-size: 16px;
             box-sizing: border-box;
         }
+        select {
+            width: 25%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
         button {
             background-color: #3498db;
             color: white;
@@ -76,6 +84,10 @@
     <div class="container">
         <h1>Climate Agent</h1>
         <div class="input-group">
+            <select id="modelSelect" style="margin-bottom: 10px;">
+                <option value="qwen2.5-coder:3b">Qwen 2.5 Coder</option>
+                <option value="gpt-4o">GPT-4o</option>
+            </select>
             <input type="text" id="questionInput" placeholder="Enter your question (e.g., Which storm has highest wind speed in 2003?)">
         </div>
         <button onclick="submitQuestion()">Get Answer</button>
@@ -86,9 +98,11 @@
     <script>
         async function submitQuestion() {
             const questionInput = document.getElementById('questionInput');
+            const modelSelect = document.getElementById('modelSelect');
             const responseDiv = document.getElementById('response');
             const loadingDiv = document.getElementById('loading');
             const question = questionInput.value.trim();
+            const model = modelSelect.value;
 
             if (!question) {
                 alert('Please enter a question');
@@ -106,7 +120,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ question: question })
+                    body: JSON.stringify({ question: question, model: model })
                 });
 
                 const data = await response.json();
@@ -141,4 +155,4 @@
         });
     </script>
 </body>
-</html> 
+</html>
